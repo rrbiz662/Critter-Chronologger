@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.pet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udacity.jdnd.course3.critter.user.Customer;
+import com.udacity.jdnd.course3.critter.user.UserService;
 
 /**
  * Handles web requests related to Pets.
@@ -23,6 +25,8 @@ import com.udacity.jdnd.course3.critter.user.Customer;
 public class PetController {
 	@Autowired
 	private PetService petService;
+	@Autowired
+	private UserService userService;
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
@@ -87,28 +91,20 @@ public class PetController {
     
     private Pet mapDtoToPet(PetDTO petDTO) {
     	Pet pet = new Pet();
-    	Customer customer = new Customer();
-    	//customer.setId(petDTO.getOwnerId());
-    	
-    	pet.setId(petDTO.getId());
-    	pet.setType(petDTO.getType());
-    	pet.setName(petDTO.getName());
-    	pet.setBirthDate(petDTO.getBirthDate());
-    	pet.setNotes(petDTO.getNotes());
-    	//pet.setCustomer(customer);
+    	BeanUtils.copyProperties(petDTO, pet);
+    
+    	Customer customer = (petDTO.getOwnerId() > 0 ? userService.getCustomer(petDTO.getOwnerId()) : null);
+    	pet.setCustomer(customer);
     	
     	return pet;
     }
     
     private PetDTO mapPetToDto(Pet pet) {
-    	PetDTO petDTO = new PetDTO();
+    	PetDTO petDTO = new PetDTO();    	
+    	BeanUtils.copyProperties(pet, petDTO);
     	
-    	petDTO.setId(pet.getId());
-    	petDTO.setType(pet.getType());
-    	petDTO.setName(pet.getName());
-    	//petDTO.setOwnerId(pet.getCustomer().getId());
-    	petDTO.setBirthDate(pet.getBirthDate());
-    	petDTO.setNotes(pet.getNotes());    	
+    	long ownerId = (pet.getCustomer() != null ? pet.getCustomer().getId() : 0);
+    	petDTO.setOwnerId(ownerId);
     	
     	return petDTO;
     }

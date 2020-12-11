@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,11 @@ public class UserController {
         
         return customerDTOs;
     }
+    
+    @GetMapping("/customer/{customerId}")
+    public CustomerDTO getOwner(@PathVariable long customerId) {
+    	return mapCustomerToDto(userService.getCustomer(customerId));
+    }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId){
@@ -77,128 +83,51 @@ public class UserController {
     	return dtos;
     }
     
-    public CustomerDTO mapCustomerToDto(Customer customer) {
-    	CustomerDTO dto = null;
+    public CustomerDTO mapCustomerToDto(Customer customer) {    	
+    	CustomerDTO dto = new CustomerDTO();
+    	BeanUtils.copyProperties(customer, dto);
     	
-    	if(customer != null) {
-        	dto = new CustomerDTO();
-        	
-        	if(customer.getPets() != null) {
-            	List<Long> petIds = new ArrayList<Long>();
-            	
-            	// Copy pet IDs.
-            	for (Pet pet : customer.getPets()) {
-        			petIds.add(pet.getId());
-        		}
-            	
-            	dto.setPetIds(petIds);   
-        	}
-
-        	if(customer.getId() > 0) {
-        	 	dto.setId(customer.getId()); 		
-        	}
-        	
-        	if(customer.getName() != null) {
-        		dto.setName(customer.getName());
-        	}
-        	
-        	if(customer.getNotes() != null) {
-        		dto.setNotes(customer.getNotes());
-        	}
-        	
-        	if(customer.getPhoneNumber() != null) {
-            	dto.setPhoneNumber(customer.getPhoneNumber());
-        	}   	        
+    	if(customer.getPets() != null) {
+    		List<Long> petIds = new ArrayList<Long>();
+    	
+    		// Copy pet IDs.
+    		for (Pet pet : customer.getPets()) {
+    			petIds.add(pet.getId());
+    		}
+    	
+    		dto.setPetIds(petIds);   
     	}
     	
     	return dto;
     }
     
-    public Customer mapDtoToCustomer(CustomerDTO dto) {
-    	Customer customer = null;
+    public Customer mapDtoToCustomer(CustomerDTO dto) {    	
+    	Customer customer = new Customer();
+    	BeanUtils.copyProperties(dto, customer);
     	
-    	if(dto != null) {        	
-        	customer = new Customer();
+       	if(dto.getPetIds() != null) {
+    		List<Pet> pets = new ArrayList<Pet>();
+    		
+        	for (Long petId : dto.getPetIds()) {
+    			pets.add(petService.getPet(petId));
+    		}
         	
-        	if(dto.getPetIds() != null) {
-        		List<Pet> pets = new ArrayList<Pet>();
-        		
-            	for (Long petId : dto.getPetIds()) {
-        			pets.add(petService.getPet(petId));
-        		}
-            	
-            	customer.setPets(pets);
-        	}
-
-        	
-        	if(dto.getId() > 0) {
-        		customer.setId(dto.getId());
-        	}
-        	
-        	if(dto.getName() != null) {
-        		customer.setName(dto.getName());
-        	}
-        	
-        	if(dto.getNotes() != null) {
-            	customer.setNotes(dto.getNotes());
-        	}
-        	
-        	if(dto.getPhoneNumber() != null) {
-        		customer.setPhoneNumber(dto.getPhoneNumber());
-        	}                	
+        	customer.setPets(pets);
     	}
     	
     	return customer;
     }
     
     private Employee mapDtoToEmployee(EmployeeDTO dto) {
-    	Employee employee = null;
-    	
-    	if(dto != null) {
-    		employee = new Employee();
-    		
-    		if(dto.getId() > 0) {
-    			employee.setId(dto.getId());
-    		}
-    		
-    		if(dto.getName() != null) {
-    			employee.setName(dto.getName());
-    		}
-    		
-    		if(dto.getDaysAvailable() != null) {
-    			employee.setDaysAvailable(dto.getDaysAvailable());
-    		}
-    		
-    		if(dto.getSkills() != null) {
-    			employee.setSkills(dto.getSkills());
-    		}
-    	}    	
+    	Employee employee = new Employee();
+    	BeanUtils.copyProperties(dto, employee);
     	
     	return employee;
     }
     
     private EmployeeDTO mapEmployeeToDto(Employee employee) {
-    	EmployeeDTO dto = null;
-    	
-    	if(employee != null) {
-    		dto = new EmployeeDTO();
-    		
-    		if(employee.getId() > 0) {
-    			dto.setId(employee.getId());
-    		}
-    		
-    		if(employee.getName() != null) {
-    			dto.setName(employee.getName());
-    		}
-    		
-    		if(employee.getDaysAvailable() != null) {
-    			dto.setDaysAvailable(employee.getDaysAvailable());
-    		}
-    		
-    		if(employee.getSkills() != null) {
-    			dto.setSkills(employee.getSkills());
-    		}
-    	}
+    	EmployeeDTO dto = new EmployeeDTO();
+    	BeanUtils.copyProperties(employee, dto);
     	
     	return dto;
     }

@@ -19,6 +19,10 @@ public class UserService {
 		return customerRepository.save(customer);
 	}
 	
+	public Customer getCustomer(Long customerId) {
+		return customerRepository.findById(customerId).get();
+	}
+	
 	public Iterable<Customer> getCustomers(){
 		return customerRepository.findAll();
 	}
