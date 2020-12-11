@@ -1,7 +1,5 @@
 package com.udacity.jdnd.course3.critter.user;
 
-import java.time.DayOfWeek;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,7 +10,6 @@ public class User {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private Enum<DayOfWeek> schedule;
 
 	public Long getId() {
 		return id;
@@ -29,13 +26,5 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Enum<DayOfWeek> getSchedule() {
-		return schedule;
-	}
-
-	public void setSchedule(Enum<DayOfWeek> schedule) {
-		this.schedule = schedule;
-	}	
 	
 }

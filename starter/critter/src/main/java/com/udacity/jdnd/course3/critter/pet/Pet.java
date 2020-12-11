@@ -1,12 +1,11 @@
 package com.udacity.jdnd.course3.critter.pet;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import com.udacity.jdnd.course3.critter.user.Customer;
 
@@ -15,14 +14,12 @@ public class Pet {
 	@Id
 	@GeneratedValue
 	private long id;
-	private Enum<PetType> type;
+	private PetType type;
 	private String name;
 	private LocalDate birthDate;
 	private String notes;
-	private Enum<DayOfWeek> schedule;
-	
-	@OneToOne
-	private Customer owner;		
+	@ManyToOne
+	private Customer customer;
 
 	public long getId() {
 		return id;
@@ -30,10 +27,10 @@ public class Pet {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public Enum<PetType> getType() {
+	public PetType getType() {
 		return type;
 	}
-	public void setType(Enum<PetType> type) {
+	public void setType(PetType type) {
 		this.type = type;
 	}
 	public String getName() {
@@ -56,16 +53,10 @@ public class Pet {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	public Customer getOwner() {
-		return owner;
+	public Customer getCustomer() {
+		return customer;
 	}
-	public void setOwner(Customer owner) {
-		this.owner = owner;
+	public void setCustomer(Customer owner) {
+		this.customer = owner;
 	}
-	public Enum<DayOfWeek> getSchedule() {
-		return schedule;
-	}
-	public void setSchedule(Enum<DayOfWeek> schedule) {
-		this.schedule = schedule;
-	}	
 }
