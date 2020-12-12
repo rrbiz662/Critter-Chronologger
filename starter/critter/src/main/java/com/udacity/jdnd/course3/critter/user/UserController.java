@@ -75,15 +75,14 @@ public class UserController {
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
         List<EmployeeDTO> dtos = new ArrayList<EmployeeDTO>();
         
-        for (Employee employee : userService.getAvailableEmployeesBySkills(employeeDTO.getSkills(), employeeDTO.getDate())) {
-			dtos.add(mapEmployeeToDto(employee));
+        for (Employee employee : userService.getAvailableEmployeesBySkills(employeeDTO.getSkills(), employeeDTO.getDate())) {			
+        	dtos.add(mapEmployeeToDto(employee));
 		}
-    	
-    	//throw new UnsupportedOperationException();
+        
     	return dtos;
     }
     
-    public CustomerDTO mapCustomerToDto(Customer customer) {    	
+    private CustomerDTO mapCustomerToDto(Customer customer) {    	
     	CustomerDTO dto = new CustomerDTO();
     	BeanUtils.copyProperties(customer, dto);
     	
@@ -101,7 +100,7 @@ public class UserController {
     	return dto;
     }
     
-    public Customer mapDtoToCustomer(CustomerDTO dto) {    	
+    private Customer mapDtoToCustomer(CustomerDTO dto) {    	
     	Customer customer = new Customer();
     	BeanUtils.copyProperties(dto, customer);
     	

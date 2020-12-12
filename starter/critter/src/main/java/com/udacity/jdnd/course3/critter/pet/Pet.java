@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.pet;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,7 +19,7 @@ public class Pet {
 	private String name;
 	private LocalDate birthDate;
 	private String notes;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Customer customer;
 
 	public long getId() {

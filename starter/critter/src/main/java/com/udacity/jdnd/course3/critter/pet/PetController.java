@@ -25,8 +25,6 @@ import com.udacity.jdnd.course3.critter.user.UserService;
 public class PetController {
 	@Autowired
 	private PetService petService;
-	@Autowired
-	private UserService userService;
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
@@ -66,19 +64,12 @@ public class PetController {
     public PetDTO updatePet(@PathVariable long petId, @RequestBody PetDTO petDTO) {
     	Pet pet = petService.getPet(petId);
     	if(pet != null) {
+    		Customer customer = new Customer();
+    		BeanUtils.copyProperties(petDTO, pet, "birthdate");
+    		customer.setId(petDTO.getOwnerId());
+    		pet.setCustomer(customer);
     		
-    	  	Customer customer = new Customer();
-        	//customer.setId(petDTO.getOwnerId());
-    		
-    		pet.setType(petDTO.getType());
-    		pet.setName(petDTO.getName());
-    		pet.setBirthDate(petDTO.getBirthDate());
-    		pet.setNotes(petDTO.getNotes());
-    		//pet.setCustomer(customer);
-    		
-    		Pet updatedPet = petService.savePet(pet);
-    		
-    		return mapPetToDto(updatedPet);
+    		return mapPetToDto(petService.savePet(pet));
     	}
     	
     	return null; 
@@ -91,18 +82,19 @@ public class PetController {
     
     private Pet mapDtoToPet(PetDTO petDTO) {
     	Pet pet = new Pet();
-    	BeanUtils.copyProperties(petDTO, pet);
-    
-    	Customer customer = (petDTO.getOwnerId() > 0 ? userService.getCustomer(petDTO.getOwnerId()) : null);
+    	Customer customer = new Customer();
+    	
+    	BeanUtils.copyProperties(petDTO, pet, "birthDate");   	
+    	customer.setId(petDTO.getOwnerId());
     	pet.setCustomer(customer);
     	
     	return pet;
     }
     
     private PetDTO mapPetToDto(Pet pet) {
-    	PetDTO petDTO = new PetDTO();    	
-    	BeanUtils.copyProperties(pet, petDTO);
+    	PetDTO petDTO = new PetDTO(); 
     	
+    	BeanUtils.copyProperties(pet, petDTO,"birthDate");    	
     	long ownerId = (pet.getCustomer() != null ? pet.getCustomer().getId() : 0);
     	petDTO.setOwnerId(ownerId);
     	

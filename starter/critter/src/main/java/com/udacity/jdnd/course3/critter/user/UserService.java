@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.user;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +41,16 @@ public class UserService {
 	}
 	
 	public List<Employee> getAvailableEmployeesBySkills(Set<EmployeeSkill> skills, LocalDate date){
-		return employeeRepository.findEmployeesBySkillsInAndDaysAvailable(skills, date);
+		List<Employee> foundEmployees = employeeRepository.findEmployeesBySkillsInAndDaysAvailable(skills, date.getDayOfWeek());
+		List<Employee> exactSkillMatch = new ArrayList<Employee>();
+		
+		for (Employee employee : foundEmployees) {
+			if (employee.getSkills().containsAll(skills)) {
+				exactSkillMatch.add(employee);
+			}
+		}
+		
+		return exactSkillMatch;
 	}
 
 }
